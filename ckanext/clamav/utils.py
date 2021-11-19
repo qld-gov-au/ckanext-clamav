@@ -37,18 +37,20 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
     status, signature = _scan_filestream(file)
 
     if status == CLAMAV_STATUS_ERR_DISABLED:
+        log.info(
+            "The unscanned file will be uploaded because clamav-daemon is disabled. "
+            f"Filename: {file.filename}, package_id: {data_dict['package_id']}, name: {data_dict['name'] or None}"
+        )
         return
     elif status in (CLAMAV_STATUS_ERR_FILELIMIT,):
         raise logic.ValidationError({"Virus checker": [signature]})
     elif status == CLAMAV_STATUS_FOUND:
-        raise logic.ValidationError(
-            {
-                "Virus checker": [
-                    "malware has been found. "
-                    f"Filename: {file.filename}, signature: {signature}."
-                ]
-            }
+        error_msg: str = (
+            "malware has been found. "
+            f"Filename: {file.filename}, signature: {signature}."
         )
+        log.warning(error_msg)
+        raise logic.ValidationError({"Virus checker": [error_msg]})
 
 
 def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
