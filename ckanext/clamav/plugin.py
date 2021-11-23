@@ -22,9 +22,3 @@ class ClamavPlugin(p.SingletonPlugin):
             return
 
         scan_file_for_viruses(data_dict)
-
-        for plugin in p.PluginImplementations(p.IUploader):
-            if isinstance(plugin, type(self)):
-                continue
-            return plugin.get_resource_uploader(data_dict)
-
