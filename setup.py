@@ -16,7 +16,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # http://packaging.python.org/en/latest/tutorial.html#version
-    version='0.0.1',
+    version='1.0.2',
 
     description='''Check upload resources for viruses''',
     long_description=long_description,
@@ -56,13 +56,14 @@ setup(
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
         namespace_packages=['ckanext'],
-
+    python_requires=">=3.7",
     install_requires=[
       # CKAN extensions should not list dependencies here, but in a separate
       # ``requirements.txt`` file.
       #
       # http://docs.ckan.org/en/latest/extensions/best-practices.html
       # add-third-party-libraries-to-requirements-txt
+      "clamd",
     ],
 
     # If there are data files included in your packages that need to be

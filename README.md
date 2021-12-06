@@ -52,6 +52,22 @@ To install ckanext-clamav:
 	# (optional, default: True).
 	ckanext.clamav.upload_unscanned = False
 
+    # ClamAV connection mechanism. There are two options: `tcp` or `unix`.
+    # If `tcp` selected, you must provide host:port (check next options).
+    # ( optional, default: unix)
+    ckanext.clamav.socket_type = unix
+
+    # TCP/IP hostname
+    ckanext.clamav.tcp.host = your.hostname.address
+
+    # TCP/IP port
+    ckanext.clamav.tcp.port = 3310
+
+    # ClamAV connection timeout. Either `tcp` or `unix`
+    # By default, there is no timeout.
+    # ( optional, default: 60)
+    ckanext.clamav.timeout = 120
+
 
 ## Developer installation
 
