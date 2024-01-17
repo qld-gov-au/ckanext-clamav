@@ -11,26 +11,31 @@ Clamd library uses clamav tool, and you must install it into your environment, t
 For example, to install ClamAV on Ubuntu:
 
 1. Install ClamAV with APT
+	```
     apt-get update
     apt-get install clamav clamav-daemon -y
+	```
 
 2. Update the ClamAV signature database
+	```
     systemctl stop clamav-freshclam
     freshclam
     systemctl start clamav-freshclam
+	```
 
 To install ckanext-clamav:
 
 1. Activate your CKAN virtual environment, for example:
 
-     . /usr/lib/ckan/default/bin/activate
+     `. /usr/lib/ckan/default/bin/activate`
 
 2. Clone the source and install it on the virtualenv
-
+	```
     git clone https://github.com/mutantsan/ckanext-clamav.git
     cd ckanext-clamav
     pip install -e .
 	pip install -r requirements.txt
+	```
 
 3. Add `clamav` to the `ckan.plugins` setting in your CKAN
    config file (by default the config file is located at
@@ -38,7 +43,7 @@ To install ckanext-clamav:
 
 4. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu:
 
-     sudo service apache2 reload
+    `sudo service apache2 reload`
 
 
 ## Config settings
