@@ -101,7 +101,7 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
     cd: Union[ClamdUnixSocket, ClamdNetworkSocket] = _get_conn()
 
     try:
-        scan_result: dict[str, tuple[str, Optional[str]]] = cd.instream(file.stream)
+        scan_result: dict[str, tuple[str, str | None]] | None  = cd.instream(file.stream)
     except BufferTooLongError:
         error_msg: str = (
             "the uploaded file exceeds the filesize limit "
@@ -113,6 +113,9 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
         error_msg: str = "clamav is not accessible, check its status."
         log.critical(error_msg)
         return (c.CLAMAV_STATUS_ERR_DISABLED, error_msg)
+
+    if not scan_result:
+        return (c.CLAMAV_STATUS_ERR_DISABLED, None)
 
     return scan_result["stream"]
 
@@ -150,7 +153,7 @@ def _get_conn() -> Union[ClamdUnixSocket, CustomClamdNetworkSocket]:
         return ClamdUnixSocket(socket_path, conn_timeout)
 
     tcp_host: str = tk.config.get(c.CLAMAV_CONF_SOCK_TCP_HOST)
-    tcp_port: str = tk.asint(tk.config.get(c.CLAMAV_CONF_SOCK_TCP_PORT))
+    tcp_port: int = tk.asint(tk.config.get(c.CLAMAV_CONF_SOCK_TCP_PORT))
 
     if not all((tcp_port, tcp_host)):
         raise CkanConfigurationException(
