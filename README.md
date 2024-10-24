@@ -1,4 +1,4 @@
-[![Tests](https://github.com/mutantsan/ckanext-clamav/workflows/Tests/badge.svg?branch=main)](https://github.com/mutantsan/ckanext-clamav/actions)
+[![Tests](https://github.com/DataShades/ckanext-clamav/workflows/Tests/badge.svg?branch=main)](https://github.com/DataShades/ckanext-clamav/actions)
 
 # ckanext-clamav
 
@@ -31,7 +31,7 @@ To install ckanext-clamav:
 
 2. Clone the source and install it on the virtualenv
 	```
-    git clone https://github.com/mutantsan/ckanext-clamav.git
+    git clone https://github.com/DataShades/ckanext-clamav.git
     cd ckanext-clamav
     pip install -e .
 	pip install -r requirements.txt
@@ -79,7 +79,7 @@ To install ckanext-clamav:
 To install ckanext-clamav for development, activate your CKAN virtualenv and
 do:
 
-    git clone https://github.com/mutantsan/ckanext-clamav.git
+    git clone https://github.com/DataShades/ckanext-clamav.git
     cd ckanext-clamav
     python setup.py develop
     pip install -r dev-requirements.txt
