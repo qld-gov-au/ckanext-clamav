@@ -1,53 +1,51 @@
-"""
-Tests for plugin.py.
+from io import BytesIO
 
-Tests are written using the pytest library (https://docs.pytest.org), and you
-should read the testing guidelines in the CKAN docs:
-https://docs.ckan.org/en/2.9/contributing/testing.html
+import pytest
+import ckantoolkit as tk
+from ckan.tests import helpers, factories
 
-To write tests for your extension you should install the pytest-ckan package:
-
-    pip install pytest-ckan
-
-This will allow you to use CKAN specific fixtures on your tests.
-
-For instance, if your test involves database access you can use `clean_db` to
-reset the database:
-
-    import pytest
-
-    from ckan.tests import factories
-
-    @pytest.mark.usefixtures("clean_db")
-    def test_some_action():
-
-        dataset = factories.Dataset()
-
-        # ...
-
-For functional tests that involve requests to the application, you can use the
-`app` fixture:
-
-    from ckan.plugins import toolkit
-
-    def test_some_endpoint(app):
-
-        url = toolkit.url_for('myblueprint.some_endpoint')
-
-        response = app.get(url)
-
-        assert response.status_code == 200
+eicar_string = b"X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"  # noqa: W605 invalid escape sequence '\P'
+clean_string = b"safe file content"
 
 
-To temporary patch the CKAN configuration for the duration of a test you can use:
+@pytest.mark.ckan_config("ckan.plugins", "my_clamav_plugin")
+def test_clamav_allows_clean_file():
+    user = factories.User()
+    # normally creating a resource causes xloader_submit to be called,
+    # but we avoid that by setting an invalid format
+    dataset = factories.Dataset(user=user)
 
-    import pytest
+    """Test that ClamAV allows clean files."""
+    res = helpers.call_action(
+        "resource_create",
+        context={"user": user["name"]},
+        package_id=dataset["id"],
+        url="",
+        upload={'upload': (BytesIO(clean_string), 'safe.txt')},
+        name="Clean File",
+    )
 
-    @pytest.mark.ckan_config("ckanext.myext.some_key", "some_value")
-    def test_some_action():
-        pass
-"""
+    # Check if the resource was created
+    assert "id" in res, "Resource was not created successfully:" + res
 
 
-def test_plugin():
-    pass
+@pytest.mark.ckan_config("ckan.plugins", "clamav")
+def test_clamav_blocks_infected_file():
+    user = factories.User()
+    # normally creating a resource causes xloader_submit to be called,
+    # but we avoid that by setting an invalid format
+    dataset = factories.Dataset(user=user)
+
+    """Test that ClamAV blocks infected files."""
+    with pytest.raises(tk.ValidationError) as excinfo:
+        helpers.call_action(
+            "resource_create",
+            context={"user": user["name"]},
+            package_id=dataset["id"],
+            url="",
+            upload={'upload': (BytesIO(eicar_string), 'infected.txt')},
+            name="Infected File",
+        )
+
+    # Verify ClamAV blocked the file
+    assert "infected file" in str(excinfo.value).lower(), str(excinfo.value).lower()
