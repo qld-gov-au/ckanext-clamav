@@ -101,7 +101,7 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
     cd: Union[ClamdUnixSocket, ClamdNetworkSocket] = _get_conn()
 
     try:
-        scan_result: dict[str, tuple[str, str | None]] | None  = cd.instream(file.stream)
+        scan_result: dict[str, tuple[str, str | None]] | None = cd.instream(file.stream)
     except BufferTooLongError:
         error_msg: str = (
             "the uploaded file exceeds the filesize limit "
