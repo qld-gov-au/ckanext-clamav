@@ -15,8 +15,8 @@ import ckan.logic as logic
 import ckan.plugins.toolkit as tk
 from ckan.exceptions import CkanConfigurationException
 
-import ckanext.clamav.config as c
-from ckanext.clamav.adapters import CustomClamdNetworkSocket
+from . import config as c
+from .adapters import CustomClamdNetworkSocket
 
 
 log = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def scan_file_for_viruses(data_dict: dict[str, Any]):
             raise logic.ValidationError(
                 {
                     "Virus checker": [
-                        "The clamav is disabled. Can't uploade the file. Contact administrator"
+                        "The clamav is disabled. Can't upload the file. Contact administrator"
                     ]
                 }
             )

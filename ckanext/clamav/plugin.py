@@ -1,7 +1,7 @@
 import ckan.plugins as p
 import ckan.plugins.toolkit as toolkit
 
-from ckanext.clamav.utils import scan_file_for_viruses
+from . import utils
 
 
 class ClamavPlugin(p.SingletonPlugin):
@@ -21,4 +21,4 @@ class ClamavPlugin(p.SingletonPlugin):
         if not data_dict.get("upload"):
             return
 
-        scan_file_for_viruses(data_dict)
+        utils.scan_file_for_viruses(data_dict)
