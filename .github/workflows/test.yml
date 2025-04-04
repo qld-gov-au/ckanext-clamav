@@ -38,6 +38,11 @@ jobs:
       image: ckan/ckan-dev:${{ matrix.ckan-image }}
       options: --user root
     services:
+      clamav:
+        image: clamav/clamav
+        ports:
+          - 3310:3310 #clamd
+          - 7357:7357 #milter
       solr:
         image: ckan/ckan-solr:${{ matrix.ckan-version }}-solr9
       postgres:
@@ -78,11 +83,22 @@ jobs:
 
     - name: Install clamav
       run: |
-        #ubuntu based images    
+        set -eu
+        ## For Debian Container running as root
+        
         apt-get update
         apt-get install -y --no-install-recommends clamav clamav-daemon
+        
         freshclam
+        
         clamscan --version
+        
+        cat /etc/clamav/clamd.conf
+        
+        cp /etc/clamav/clamd.conf /etc/clamav/clamd.conf.sample
+        sed -e "s|.*\(LocalSocket\) .*|\1 /tmp/clamd.sock|" \
+        -e "s|.*\(User\) .*|\1 root|" \
+        "/etc/clamav/clamd.conf.sample" > "/etc/clamav/clamd.conf"
 
     - uses: actions/checkout@v4
       continue-on-error: ${{ matrix.experimental }}
@@ -104,7 +120,17 @@ jobs:
 
     - name: ${{ matrix.experimental && '**Fail_Ignored** ' || '' }} Run tests
       continue-on-error: ${{ matrix.experimental }}
-      run: pytest --ckan-ini=test.ini --cov=ckanext.clamav --cov-branch --cov-report=xml --junit-xml=./results/junit_results.xml -o junit_family=legacy
+      run: |
+        clamd --foreground &
+        CLAMD_PID=$!
+        echo "clamd started with PID $CLAMD_PID"
+        ./.github/workflows/check_clamav_started.sh
+        
+        pytest --ckan-ini=test.ini --cov=ckanext.clamav --cov-branch --cov-report=xml --junit-xml=./results/junit_results.xml -o junit_family=legacy
+        
+        echo "Stopping clamd..."
+        kill $CLAMD_PID
+        wait $CLAMD_PID 2>/dev/null
 
     - name: Generate Test results artifacts
       run: |
