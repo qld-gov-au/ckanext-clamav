@@ -10,7 +10,7 @@ class SocketTypes:
     TCP = u'tcp'
 
 
-class CalmAvStatus:
+class ClamAvStatus:
     # could be Enum but keeping it system for now
     FOUND = u'FOUND'
     ERR_FILELIMIT = u'ERR_FILELIMIT'

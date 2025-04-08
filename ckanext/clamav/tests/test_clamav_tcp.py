@@ -17,7 +17,7 @@ EICAR_LOCAL_PATH = Path("tests/eicar.com.txt")
 # This is to allow localhost testing or container testing by setting CLAMAV_HOST, default localhost
 clamav_host = os.environ.get('CLAMAV_HOST', 'localhost')
 clamav_port = os.environ.get('CLAMAV_PORT', '3310')
-clamav_socket = os.environ.get('CALMAV_SOCKET', '/var/run/clamav/clamd.ctl')
+clamav_socket = os.environ.get('CLAMAV_SOCKET', '/var/run/clamav/clamd.ctl')
 
 
 @pytest.fixture(scope="session")
@@ -44,7 +44,7 @@ def create_file(data, filename):
 @pytest.mark.ckan_config("ckan.plugins", "clamav")
 @pytest.mark.ckan_config("ckanext.clamav.upload_unscanned", "False")
 @pytest.mark.ckan_config("ckanext.clamav.socket_type", "tcp")
-class TestCalmAvTcpAgentMisconfiguration:
+class TestClamAvTcpAgentMisconfiguration:
 
     @pytest.mark.ckan_config("ckanext.clamav.tcp.port", clamav_port)
     def test_clamav_missing_tcp_host(self):
@@ -84,9 +84,9 @@ class TestCalmAvTcpAgentMisconfiguration:
 @pytest.mark.ckan_config("ckanext.clamav.socket_type", "tcp")
 @pytest.mark.ckan_config("ckanext.clamav.tcp.host", clamav_host)
 @pytest.mark.ckan_config("ckanext.clamav.tcp.port", clamav_port)
-class TestCalmAvTcpAgent:
+class TestClamAvTcpAgent:
 
-    def test_clamav_allows_clean_file_via_tcp_calmd(self):
+    def test_clamav_allows_clean_file_via_tcp_clamd(self):
         user = factories.Sysadmin()
         dataset = factories.Dataset(user=user)
 
@@ -103,7 +103,7 @@ class TestCalmAvTcpAgent:
         # Check if the resource was created
         assert "id" in res, "Resource was not created successfully:" + res
 
-    def test_clamav_blocks_infected_file_via_tcp_calmd(self, eicar_file_path):
+    def test_clamav_blocks_infected_file_via_tcp_clamd(self, eicar_file_path):
         user = factories.Sysadmin()
         dataset = factories.Dataset(user=user)
 

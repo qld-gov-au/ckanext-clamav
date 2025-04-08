@@ -14,7 +14,7 @@ EICAR_LOCAL_PATH = Path("tests/eicar.com.txt")
 # This is to allow localhost testing or container testing by setting CLAMAV_HOST, default localhost
 clamav_host = os.environ.get('CLAMAV_HOST', 'localhost')
 clamav_port = os.environ.get('CLAMAV_PORT', '3310')
-clamav_socket = os.environ.get('CALMAV_SOCKET', '/var/run/clamav/clamd.ctl')
+clamav_socket = os.environ.get('CLAMAV_SOCKET', '/var/run/clamav/clamd.ctl')
 
 
 @pytest.fixture(scope="session")

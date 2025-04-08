@@ -5,7 +5,7 @@ from ckan.exceptions import CkanConfigurationException
 import ckanext.clamav.config as c
 
 
-class TestCalmAVConfig:
+class TestClamAVConfig:
 
     def test_config_defaults(self):
         assert c.upload_unscanned()

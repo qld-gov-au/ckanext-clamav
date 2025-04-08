@@ -50,7 +50,7 @@ jobs:
       CKAN_REDIS_URL: redis://redis:6379/1
       CLAMAV_HOST: clamav
       CLAMAV_PORT: 3310
-      CALMAV_SOCKET: /tmp/clamd.sock
+      CLAMAV_SOCKET: /tmp/clamd.sock
 
     steps:
     - name: Cache ClamAV signatures

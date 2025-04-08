@@ -16,7 +16,7 @@ EICAR_LOCAL_PATH = Path("tests/eicar.com.txt")
 # This is to allow localhost testing or container testing by setting CLAMAV_HOST, default localhost
 clamav_host = os.environ.get('CLAMAV_HOST', 'localhost')
 clamav_port = os.environ.get('CLAMAV_PORT', '3310')
-clamav_socket = os.environ.get('CALMAV_SOCKET', '/var/run/clamav/clamd.ctl')
+clamav_socket = os.environ.get('CLAMAV_SOCKET', '/var/run/clamav/clamd.ctl')
 
 
 @pytest.fixture(scope="session")
@@ -44,7 +44,7 @@ def create_file(data, filename):
 @pytest.mark.ckan_config("ckanext.clamav.upload_unscanned", "False")
 @pytest.mark.ckan_config("ckanext.clamav.socket_type", "unix")
 @pytest.mark.ckan_config("ckanext.clamav.socket_path", clamav_socket)
-class TestCalmAvLocalDaemon:
+class TestClamAvLocalDaemon:
 
     def test_clamav_allows_clean_file(self):
         user = factories.Sysadmin()
@@ -86,7 +86,7 @@ class TestCalmAvLocalDaemon:
 
 @pytest.mark.usefixtures(u"clean_db", u"clean_index", u'with_plugins')
 @pytest.mark.ckan_config("ckan.plugins", "clamav")
-class TestCalmAvUnitAgentMisconfiguration:
+class TestClamAvUnitAgentMisconfiguration:
 
     @pytest.mark.ckan_config("ckanext.clamav.upload_unscanned", "True")
     @pytest.mark.ckan_config("ckanext.clamav.socket_type", "unix")

@@ -16,7 +16,7 @@ from ckan.exceptions import CkanConfigurationException
 from ckan.types import ErrorDict
 
 from . import config as c
-from .config import CalmAvStatus
+from .config import ClamAvStatus
 from .adapters import CustomClamdNetworkSocket
 
 
@@ -42,7 +42,7 @@ def scan_file_for_viruses(data_dict: dict[str, Any]) -> None:
     status, signature = _scan_filestream(file)
     package_id = _get_package_id(data_dict)
 
-    if status == CalmAvStatus.ERR_DISABLE:
+    if status == ClamAvStatus.ERR_DISABLE:
         log.info("Clamd: unable to connect to clamav. Can't scan the file")
         if upload_unscanned:
             log.info(_get_unscanned_file_message(file, package_id))
@@ -54,14 +54,14 @@ def scan_file_for_viruses(data_dict: dict[str, Any]) -> None:
                     ]
                 }
             )
-    elif status in (CalmAvStatus.ERR_FILELIMIT,):
+    elif status in (ClamAvStatus.ERR_FILELIMIT,):
         log.warning(signature)
         if upload_unscanned:
             log.info(_get_unscanned_file_message(file, package_id))
         else:
             err: ErrorDict = {"Virus checker": [f"{signature}"]}
             raise logic.ValidationError(err)
-    elif status == CalmAvStatus.FOUND:
+    elif status == ClamAvStatus.FOUND:
         error_msg: str = (
             "malware has been found. "
             f"Filename: {file.filename}, signature: {signature}."
@@ -111,14 +111,14 @@ def _scan_filestream(file: FileStorage) -> tuple[str, Optional[str]]:
             "The file will not be scanned"
         )
         log.error(error_msg)
-        return (CalmAvStatus.ERR_FILELIMIT, error_msg)
+        return (ClamAvStatus.ERR_FILELIMIT, error_msg)
     except ClamConnectionError:
         error_msg: str = "clamav is not accessible, check its status."
         log.critical(error_msg)
-        return (CalmAvStatus.ERR_DISABLE, error_msg)
+        return (ClamAvStatus.ERR_DISABLE, error_msg)
 
     if not scan_result:
-        return (CalmAvStatus.ERR_DISABLE, None)
+        return (ClamAvStatus.ERR_DISABLE, None)
 
     return scan_result["stream"]
 

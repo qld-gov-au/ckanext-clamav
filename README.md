@@ -4,6 +4,9 @@
 
 This is a basic example that helps to scan uploaded resources for malwares with clamd library.
 
+Note: This interfaces via the iUploader system and needs to be first but does not return an object allowing 
+another iUploader plugins to do their thing.
+
 ## Installation
 
 Clamd library uses clamav tool, and you must install it into your environment, to make this extension work.
