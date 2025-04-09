@@ -34,7 +34,7 @@ jobs:
           ref: ${{ matrix.ckan-version }}
           path: ckan
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
@@ -44,14 +44,17 @@ jobs:
           cache: 'npm'
 
       - name: Install python deps
+        continue-on-error: ${{ matrix.experimental }}
         run: | 
           pip list
           pip install -r ckan/requirements.txt -r ckan/dev-requirements.txt ckan/.
           pip install -r requirements.txt -r dev-requirements.txt -e. 
 
       - name: Install node deps
+        continue-on-error: ${{ matrix.experimental }}
         run: npm ci
 
       - name: Check types
+        continue-on-error: ${{ matrix.experimental }}
         run: |
           npx pyright

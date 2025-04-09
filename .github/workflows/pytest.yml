@@ -89,13 +89,15 @@ jobs:
         -e "s|.*\(User\) .*|\1 root|" \
         "/etc/clamav/clamd.conf.sample" > "/etc/clamav/clamd.conf"
 
-
+## Please note that EICAR validation needs to be a text file, it won't work if embedded.
+## Leaving this here for reference if you want to have the file downloaded instead of dynamic via test_clamav_local eicar_file_path()
 #    - name: Verify ClamAV with EICAR test string
 #      run: |
 #        set -ex
+#        cd tests
 #        wget https://secure.eicar.org/eicar.com.txt
 #        #clamscan eicar.com.txt
-       
+
 
     - uses: actions/checkout@v4
       continue-on-error: ${{ matrix.experimental }}
@@ -130,6 +132,7 @@ jobs:
         wait $CLAMD_PID 2>/dev/null
 
     - name: Generate Test results artifacts
+      continue-on-error: ${{ matrix.experimental }}
       if: ${{ !cancelled() }}
       run: |
         set -ex
@@ -139,6 +142,7 @@ jobs:
 
 
     - name: Pytest Coverage Console Report
+      continue-on-error: ${{ matrix.experimental }}
       if: ${{ !cancelled() }}
       run: |
         set -ex
@@ -146,6 +150,7 @@ jobs:
 
     - name: Upload HTML coverage report
       uses: actions/upload-artifact@v4
+      continue-on-error: ${{ matrix.experimental }}
       if: ${{ !cancelled() }}
       with:
         name: combined-test-coverage-reports-${{ matrix.ckan-version }}
@@ -160,6 +165,7 @@ jobs:
 
 
     - name: Install packages required for codecov
+      continue-on-error: ${{ matrix.experimental }}
       if: ${{ !cancelled() }}
       run: |
         #ubuntu based images    
