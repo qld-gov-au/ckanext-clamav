@@ -3,6 +3,8 @@
 
 exclude =
     ckan
+    build
+    node_modules
 
 # Extended output format.
 format = pylint
