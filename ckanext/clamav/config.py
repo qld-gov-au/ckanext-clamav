@@ -1,20 +1,18 @@
 from typing import Optional
-import ckantoolkit as tk
 
+import ckan.plugins.toolkit as tk
 from ckan.exceptions import CkanConfigurationException
 
 
 class SocketTypes:
-    # could be Enum but keeping it system for now
-    UNIX = u'unix'
-    TCP = u'tcp'
+    UNIX = "unix"
+    TCP = "tcp"
 
 
 class ClamAvStatus:
-    # could be Enum but keeping it system for now
-    FOUND = u'FOUND'
-    ERR_FILELIMIT = u'ERR_FILELIMIT'
-    ERR_DISABLE = u'ERR_DISABLED'
+    FOUND = "FOUND"
+    ERR_FILELIMIT = "ERR_FILELIMIT"
+    ERR_DISABLE = "ERR_DISABLED"
 
 
 CLAMAV_CONF_SOCKET_PATH: str = "ckanext.clamav.socket_path"
@@ -31,15 +29,25 @@ CLAMAV_CONF_CONN_TIMEOUT_DF: int = 60
 
 
 def upload_unscanned() -> bool:
-    """ ckanext.clamav.socket_path defaults to True"""
-    return tk.asbool(  # type: ignore[attr-defined]
-        tk.config.get(CLAMAV_CONF_UPLOAD_UNSCANNED, CLAMAV_CONF_UPLOAD_UNSCANNED_DF)  # type: ignore[attr-defined]
+    """Get whether unscanned files should be uploaded.
+
+    Returns:
+        True if unscanned files should be uploaded, False otherwise.
+        Defaults to True via ckanext.clamav.upload_unscanned config option.
+    """
+    return tk.asbool(
+        tk.config.get(CLAMAV_CONF_UPLOAD_UNSCANNED, CLAMAV_CONF_UPLOAD_UNSCANNED_DF),
     )
 
 
 def socket_type() -> str:
-    """ ckanext.clamav.socket_type defaults to UNIX"""
-    socket_type_val = tk.config.get(CLAMAV_CONF_SOCKET_TYPE, CLAMAV_CONF_SOCKET_TYPE_DF)  # type: ignore[attr-defined]
+    """Get the socket type.
+
+    Returns:
+        The socket type.
+        Defaults to UNIX via ckanext.clamav.socket_type config option.
+    """
+    socket_type_val = tk.config.get(CLAMAV_CONF_SOCKET_TYPE, CLAMAV_CONF_SOCKET_TYPE_DF)
     if socket_type_val not in (SocketTypes.UNIX, SocketTypes.TCP):
         raise CkanConfigurationException("Clamd: unsupported connection type")
 
@@ -47,22 +55,45 @@ def socket_type() -> str:
 
 
 def conn_timeout() -> int:
-    """ ckanext.clamav.timeout defaults to 60"""
-    return tk.asint(tk.config.get(CLAMAV_CONF_CONN_TIMEOUT, CLAMAV_CONF_CONN_TIMEOUT_DF))  # type: ignore[attr-defined]
+    """Get the connection timeout.
+
+    Returns:
+        The connection timeout.
+        Defaults to 60 via ckanext.clamav.timeout config option.
+    """
+    return tk.asint(
+        tk.config.get(CLAMAV_CONF_CONN_TIMEOUT, CLAMAV_CONF_CONN_TIMEOUT_DF),
+    )
 
 
 def socket_path() -> str:
-    """ ckanext.clamav.socket_path defaults to /var/run/clamav/clamd.ctl"""
-    return tk.config.get(CLAMAV_CONF_SOCKET_PATH, CLAMAV_CONF_SOCKET_PATH_DF)  # type: ignore[attr-defined]
+    """Get the socket path.
+
+    Returns:
+        The socket path.
+        Defaults to /var/run/clamav/clamd.ctl via ckanext.clamav.socket_path
+            config option.
+    """
+    return tk.config.get(CLAMAV_CONF_SOCKET_PATH, CLAMAV_CONF_SOCKET_PATH_DF)
 
 
 def tcp_host() -> str:
-    """ ckanext.clamav.tcp_host no default"""
-    return tk.config.get(CLAMAV_CONF_SOCK_TCP_HOST)  # type: ignore[attr-defined]
+    """Get the TCP host.
+
+    Returns:
+        The TCP host.
+        Defaults to None via ckanext.clamav.tcp_host config option.
+    """
+    return tk.config.get(CLAMAV_CONF_SOCK_TCP_HOST)
 
 
 def tcp_port() -> Optional[int]:
-    """ ckanext.clamav.tcp_host no default"""
-    if tk.config.get(CLAMAV_CONF_SOCK_TCP_PORT):  # type: ignore[attr-defined]
-        return tk.asint(tk.config.get(CLAMAV_CONF_SOCK_TCP_PORT))  # type: ignore[attr-defined]
+    """Get the TCP port.
+
+    Returns:
+        The TCP port.
+        Defaults to None via ckanext.clamav.tcp_port config option.
+    """
+    if tk.config.get(CLAMAV_CONF_SOCK_TCP_PORT):
+        return tk.asint(tk.config.get(CLAMAV_CONF_SOCK_TCP_PORT))
     return None

@@ -5,13 +5,17 @@ from clamd import ClamdNetworkSocket, ConnectionError
 
 
 class CustomClamdNetworkSocket(ClamdNetworkSocket):
-    """Patches the default ClamdNetworkSocket adapter
-    with changed _init_socket method. The default implementation doesn't
-    respect timeout properly.
+    """Patches the default ClamdNetworkSocket adapter with proper timeout handling.
+
+    The default ClamdNetworkSocket implementation doesn't properly respect the timeout
+    setting. This class fixes that by correctly setting the socket timeout.
 
     Args:
-        ClamdNetworkSocket (ClamdNetworkSocket): original clamd network adapter
+        host (str): Hostname or IP address of ClamAV server
+        port (int): Port number ClamAV is listening on
+        timeout (float): Socket timeout in seconds
     """
+
     def _init_socket(self):
         """
         internal use only
@@ -21,6 +25,6 @@ class CustomClamdNetworkSocket(ClamdNetworkSocket):
             self.clamd_socket.settimeout(self.timeout)
             self.clamd_socket.connect((self.host, self.port))
 
-        except (socket.error, socket.timeout):
+        except (OSError, socket.timeout):
             e = sys.exc_info()[1]
             raise ConnectionError(self._error_message(e))
